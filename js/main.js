@@ -95,14 +95,14 @@ function renderSpot(i) {
   const spot = document.querySelectorAll('.spot')[i], c = G.spots[i];
   if (!c) { spot.innerHTML = ''; return; }
   spot.innerHTML = `<div class="cust"><div class="bubble">${bubbleHTML(c)}<div class="pbar"><i></i></div></div>
-    <div class="person">${personSVG(c, c.mood)}</div></div>`;
+    <div class="person${c.mood === 2 ? ' angry' : ''}">${personSVG(c, c.mood)}</div></div>`;
   c.el = spot.firstElementChild;
 }
 
 function leave(i, happy) {
   const c = G.spots[i]; if (!c || c.leaving) return;
   c.leaving = true;
-  if (!happy) { c.mood = 2; c.el.querySelector('.person').innerHTML = personSVG(c, 2); }
+  if (!happy) { c.mood = 2; const pe = c.el.querySelector('.person'); pe.innerHTML = personSVG(c, 2); pe.classList.remove('angry'); }
   c.el.classList.add('out');
   setTimeout(() => { if (G && G.spots[i] === c) { G.spots[i] = null; renderSpot(i); } }, 500);
 }
@@ -122,14 +122,14 @@ const sameSpec = (a, b) => ADDS.every((k) => (a[k] || 0) === (b[k] || 0));
 function deliver(t, fromEl, icon) {
   t.c.items[t.j].done = true;
   flyTo(fromEl, t.c.el.querySelector(`.oi[data-j="${t.j}"]`), icon);
-  setTimeout(() => { const o = t.c.el && t.c.el.querySelector(`.oi[data-j="${t.j}"]`); if (o) o.classList.add('done'); }, 380);
+  setTimeout(() => { const o = t.c.el && t.c.el.querySelector(`.oi[data-j="${t.j}"]`); if (o) { o.classList.add('done'); sparks(o, '#ffffff', 6); } }, 400);
   Sound.clink();
   if (t.c.items.every((it) => it.done)) {
     const tip = Math.round((MAX_TIP * (t.c.patience / t.c.max)) / 5) * 5;
     const amount = t.c.price + tip;
     G.served++; S.served++; Store.save();
     t.c.mood = 0; t.c.leaving = true;
-    setTimeout(() => { if (t.c.el) t.c.el.querySelector('.person').innerHTML = personSVG(t.c, 0); }, 200);
+    setTimeout(() => { if (t.c.el) { const pe = t.c.el.querySelector('.person'); pe.innerHTML = personSVG(t.c, 0); pe.classList.remove('angry'); } }, 200);
     setTimeout(() => {
       t.c.el.classList.add('out');
       setTimeout(() => { if (G && G.spots[t.i] === t.c) { G.spots[t.i] = null; renderSpot(t.i); } }, 500);
@@ -149,15 +149,19 @@ function addPile(i, amount) {
 function renderPile(i) {
   const slot = document.querySelectorAll('.cash')[i], p = G.piles[i];
   if (!p) { slot.innerHTML = ''; return; }
-  slot.innerHTML = `<button class="pile" type="button" aria-label="Collect coins"><span class="coin"></span>${fils(p.amount)}</button>`;
+  slot.innerHTML = `<button class="pile" type="button" aria-label="Collect ${fils(p.amount)} BD">${COIN_PILE}<span>${fils(p.amount)}</span></button>`;
   slot.firstElementChild.onclick = () => collect(i);
 }
 function collect(i) {
   const p = G.piles[i]; if (!p) return;
+  const from = document.querySelectorAll('.cash')[i];
   G.earned += p.amount; S.wallet += p.amount; Store.save();
+  sparks(from, '#f7c823', 10);
+  flyTo(from, $('money'), COIN);
+  setTimeout(() => flyTo(from, $('money'), COIN), 90);
   G.piles[i] = null; renderPile(i);
-  Sound.coin(); flash(`+${fils(p.amount)}`, '#ffd76b');
-  renderHud();
+  Sound.coin();
+  setTimeout(() => { renderHud(); const m = $('money'); m.classList.remove('bump'); void m.offsetWidth; m.classList.add('bump'); }, 420);
 }
 
 // ---------- kitchen actions ----------
@@ -250,7 +254,7 @@ function renderHud() {
   if (!G) return;
   $('lvl').textContent = G.level;
   $('earned').textContent = fils(G.earned);
-  $('custLeft').textContent = `${G.served + G.lost} / ${G.list.length} customers`;
+  $('custLeft').textContent = `${G.served + G.lost}/${G.list.length} served`;
   const top = G.stars[2];
   $('goalBar').style.width = `${Math.min(100, (G.earned / top) * 100)}%`;
   [0, 1, 2].forEach((k) => { const e = $(`star${k + 1}`); e.style.left = `${(G.stars[k] / top) * 100}%`; e.classList.toggle('on', G.earned >= G.stars[k]); });
@@ -259,7 +263,7 @@ function renderPot() {
   const p = G.pot;
   $('pot').innerHTML = `${potSVG(p.state, p.servings, potCap())}
     ${p.state === 'ready' ? `<span class="badge">${p.servings}</span>` : ''}
-    ${p.state === 'brewing' ? '<div class="prog"><i></i></div>' : `<span class="tag">${p.state === 'empty' ? 'Tap to brew' : 'Tap to pour'}</span>`}`;
+    ${p.state === 'brewing' ? '<div class="prog"><i></i></div><span class="lbl">Brewing…</span>' : `<span class="lbl">${p.state === 'empty' ? 'Tap to brew' : 'Tap to pour'}</span>`}`;
 }
 function renderCups() {
   document.querySelectorAll('.cupslot').forEach((b, i) => {
@@ -270,19 +274,20 @@ function renderCups() {
   });
 }
 function renderAdds() {
-  $('adds').innerHTML = ADDS.map((k) => `<button class="add${open(k) ? '' : ' locked'}" data-k="${k}" type="button">
-    ${ICON[k]}<b>${open(k) ? NAME[k] : `Level ${UNLOCK[k]}`}</b></button>`).join('');
+  $('adds').innerHTML = ADDS.map((k) => `<button class="add${open(k) ? '' : ' locked'}" data-k="${k}" type="button" aria-label="${NAME[k]}">
+    ${jarSVG(k)}<span class="lbl">${open(k) ? NAME[k] : `Lvl ${UNLOCK[k]}`}</span></button>`).join('');
   $('adds').querySelectorAll('.add').forEach((b) => (b.onclick = () => G && !paused && tapAdd(b.dataset.k)));
 }
 function renderSupplies() {
-  const sup = (id, k, icon, label) => {
+  const sup = (id, k, crate) => {
     const b = $(id), on = open(k);
     b.classList.toggle('locked', !on);
-    b.innerHTML = `${icon}<b>${on ? label : NAME[k]}</b><small>${on ? AR[k] : `Level ${UNLOCK[k]}`}</small>`;
+    b.setAttribute('aria-label', NAME[k]);
+    b.innerHTML = `${crateSVG(crate)}<span class="lbl">${on ? `${NAME[k]}<small>${AR[k]}</small>` : `Level ${UNLOCK[k]}`}</span>`;
   };
-  sup('doughBtn', 'paratha', ICON.dough, 'Paratha dough');
-  sup('samosaBtn', 'samosa', ICON.rawSamosa, 'Samosa');
-  sup('chipsBtn', 'chips', ICON.chips, 'Chips roll');
+  sup('doughBtn', 'paratha', 'dough');
+  sup('samosaBtn', 'samosa', 'samosa');
+  sup('chipsBtn', 'chips', 'chips');
   $('griddleBox').classList.toggle('locked', !open('paratha'));
   $('fryerBox').classList.toggle('locked', !open('samosa'));
 }
@@ -294,12 +299,13 @@ function renderPan(pan) {
     const ct = cookTime(it.type), stage = it.t >= ct + BURN_AFTER ? 'burnt' : it.t >= ct ? 'ready' : 'raw';
     it.stage = stage;
     if (stage !== 'raw') b.classList.add(stage);
-    const icon = stage === 'raw' ? (it.type === 'paratha' ? ICON.dough : ICON.rawSamosa) : ICON[it.type];
-    b.innerHTML = `${icon}<div class="prog${stage === 'ready' ? ' burn' : ''}"><i></i></div>`;
+    const art = it.type === 'paratha' ? parathaSVG(stage) : samosaSVG(stage);
+    b.innerHTML = `${art}${stage === 'burnt' ? '' : `<div class="prog${stage === 'ready' ? ' burn' : ''}"><i></i></div>`}`;
   });
 }
 function renderWarmer() {
-  document.querySelectorAll('.wm').forEach((b, i) => { const it = G.warmer[i]; b.innerHTML = it ? ICON[it.type] : ''; });
+  const art = { paratha: () => parathaSVG('ready'), samosa: () => samosaSVG('ready'), chips: () => ICON.chips };
+  document.querySelectorAll('.wm').forEach((b, i) => { const it = G.warmer[i]; b.innerHTML = it ? art[it.type]() : ''; });
 }
 
 function flyTo(fromEl, toEl, icon) {
@@ -322,15 +328,41 @@ function flash(text, color, small) {
   app.appendChild(el); setTimeout(() => el.remove(), 1000);
 }
 
+function sparks(el, color, n) {
+  if (!el) return;
+  const a = app.getBoundingClientRect(), r = el.getBoundingClientRect();
+  for (let k = 0; k < n; k++) {
+    const sp = document.createElement('div'), ang = (k / n) * Math.PI * 2, d = 26 + Math.random() * 18;
+    sp.className = 'spark'; sp.style.background = k % 2 ? color : '#f7c823';
+    sp.style.left = `${r.left - a.left + r.width / 2}px`; sp.style.top = `${r.top - a.top + r.height / 2}px`;
+    sp.style.setProperty('--dx', `${Math.cos(ang) * d}px`); sp.style.setProperty('--dy', `${Math.sin(ang) * d}px`);
+    app.appendChild(sp); setTimeout(() => sp.remove(), 650);
+  }
+}
+
 // ---------- screens ----------
 function setScreen(html) { card.innerHTML = html; ov.hidden = false; }
 function bind(id, fn) { const el = $(id); if (el) el.onclick = () => { Sound.click(); fn(); }; }
 const totalStars = () => Object.values(S.stars).reduce((a, b) => a + b, 0);
 const starRow = (n) => `<div class="stars">${[0, 1, 2].map((k) => `<i class="${k < n ? 'on' : ''}"></i>`).join('')}</div>`;
 
+// A tidy kitchen to look at behind the menus.
+function previewKitchen() {
+  G = { level: LEVELS, list: [], stars: [1, 2, 3], earned: 0, served: 0, lost: 0, spots: [null, null, null], piles: [null, null, null],
+    pot: { state: 'ready', t: 0, servings: 4 }, cups: [{ spec: { sugar: 1, hail: 1 } }, { spec: { milk: 1 } }, null], sel: 0,
+    griddle: [{ type: 'paratha', t: 5.5 }, null], fryer: [{ type: 'samosa', t: 1 }, null], warmer: [{ type: 'chips' }, null] };
+  renderAll();
+  document.querySelectorAll('.spot').forEach((s) => (s.innerHTML = ''));
+  document.querySelectorAll('.cash').forEach((s) => (s.innerHTML = ''));
+  $('lvl').textContent = '–'; $('earned').textContent = fils(S.wallet); $('custLeft').textContent = '';
+  $('goalBar').style.width = '0';
+  G = null;
+}
+
 function showMenu() {
-  G = null; paused = false;
+  previewKitchen(); paused = false;
   setScreen(`
+    <div class="hero">${heroSVG()}</div>
     <div class="logo">Karak<span>Rush</span></div>
     <div class="logo-ar">كرك رَش</div>
     <p>Brew karak, cook paratha, keep the customers smiling.</p>
@@ -356,7 +388,7 @@ function showMenu() {
 
 function showHow(thenPlay) {
   setScreen(`
-    <h1>How to play</h1>
+    <div class="ribbon">How to play</div>
     <ol class="rules">
       <li>Customers come to the window with an order bubble. Serve everything in the bubble to get paid.</li>
       <li><b>Karak:</b> tap the pot to brew, then tap it again to pour a cup. The highlighted cup gets the sugar and spices you tap. Tap a finished cup to hand it over.</li>
@@ -369,14 +401,14 @@ function showHow(thenPlay) {
 }
 
 function showMap() {
-  G = null;
+  previewKitchen();
   const btns = Array.from({ length: LEVELS }, (_, k) => {
     const l = k + 1, ok = l <= S.unlocked, st = S.stars[l] || 0;
     return `<button class="lv${l === S.unlocked ? ' next' : ''}" data-l="${l}" ${ok ? '' : 'disabled'} type="button">
       <b>${l}</b><div class="s">${[0, 1, 2].map((s) => `<i class="${s < st ? 'on' : ''}"></i>`).join('')}</div></button>`;
   }).join('');
-  setScreen(`<h1>Pick a level</h1>
-    <div class="wallet"><span class="coin"></span>${fils(S.wallet)} BD</div>
+  setScreen(`<div class="ribbon">Pick a level</div>
+    <div class="wallet"><span class="coinIcon"></span>${fils(S.wallet)} BD</div>
     <div class="map">${btns}</div>
     <div class="stack"><div class="row2"><button class="btn gold" id="shop">Upgrades</button><button class="btn ghost" id="back">Main menu</button></div></div>`);
   card.querySelectorAll('.lv').forEach((b) => (b.onclick = () => { Sound.click(); showIntro(+b.dataset.l); }));
@@ -387,8 +419,9 @@ function showMap() {
 function showIntro(l) {
   const fresh = Object.keys(UNLOCK).filter((k) => UNLOCK[k] === l);
   const { list, stars } = genLevel(l);
-  setScreen(`<h1>Level ${l}</h1>
-    <p>${list.length} customers tonight.</p>
+  setScreen(`<div class="ribbon">Level ${l}</div>
+    <div class="big">${list.length} customers</div>
+    <p class="muted">tonight at the stall</p>
     ${fresh.length ? `<p class="muted">${l === 1 ? 'On the menu' : 'New on the menu'}:</p>
       <div class="newitems">${fresh.map((k) => `<div>${ICON[k]}${NAME[k]}</div>`).join('')}</div>` : ''}
     <ul class="lines">${stars.map((s, k) => `<li><span>${'★'.repeat(k + 1)}</span><b>BD ${fils(s)}</b></li>`).join('')}</ul>
@@ -401,9 +434,9 @@ function showShop(back) {
   const ups = Object.entries(UPGRADES).map(([id, u]) => {
     const lvl = S.upgrades[id], cost = u.costs[lvl], maxed = cost == null;
     return `<div class="up"><div><b>${esc(u.name)}</b><span class="pips">${u.costs.map((_, i) => `<i class="${i < lvl ? 'on' : ''}"></i>`).join('')}</span><p>${esc(u.desc)}</p></div>
-      <button class="btn ${maxed ? 'ghost' : 'gold'}" data-up="${id}" ${maxed || S.wallet < cost ? 'disabled' : ''} type="button">${maxed ? 'Maxed' : `${fils(cost)}`}</button></div>`;
+      <button class="btn ${maxed ? 'ghost' : 'gold'}" data-up="${id}" ${maxed || S.wallet < cost ? 'disabled' : ''} type="button">${maxed ? 'Maxed' : `<span class="coinIcon"></span>${fils(cost)}`}</button></div>`;
   }).join('');
-  setScreen(`<h1>Upgrades</h1><div class="wallet"><span class="coin"></span>${fils(S.wallet)} BD</div>
+  setScreen(`<div class="ribbon">Upgrades</div><div class="wallet"><span class="coinIcon"></span>${fils(S.wallet)} BD</div>
     <div class="shop">${ups}</div><div class="stack"><button class="btn" id="back">Done</button></div>`);
   card.querySelectorAll('[data-up]').forEach((b) => (b.onclick = () => {
     const id = b.dataset.up, cost = UPGRADES[id].costs[S.upgrades[id]];
@@ -422,7 +455,7 @@ function finishLevel() {
   Store.save();
   stars ? Sound.bell() : Sound.leave();
   const nextOk = stars >= 1 && l < LEVELS;
-  setScreen(`<h1>${stars === 3 ? 'Perfect night!' : stars ? 'Stall closed' : 'Not enough tonight'}</h1>
+  setScreen(`<div class="ribbon">Level ${l}</div><h1 style="margin-top:6px">${stars === 3 ? 'Perfect night!' : stars ? 'Well done!' : 'Not enough tonight'}</h1>
     ${starRow(stars)}
     <div class="big">BD ${fils(G.earned)}</div>
     <ul class="lines">
@@ -451,7 +484,7 @@ function afterShop(l, stars) {
 function pause() {
   if (!G || G.over || paused) return;
   paused = true;
-  setScreen(`<h1>Break time</h1><p>Everyone waits while you rest.</p>
+  setScreen(`<div class="ribbon">Paused</div><h1 style="margin-top:6px">Break time</h1><p>Everyone waits while you rest.</p>
     <div class="stack"><button class="btn" id="resume">Back to work</button>
     <div class="row2"><button class="btn gold" id="restart">Restart</button><button class="btn ghost" id="quit">Level map</button></div></div>`);
   bind('resume', () => { paused = false; ov.hidden = true; });
@@ -512,7 +545,11 @@ function tick(dt) {
     bar.style.width = `${f * 100}%`;
     bar.style.background = f > 0.55 ? '#6aa84f' : f > 0.25 ? '#f5b301' : '#d6262b';
     const mood = f > 0.55 ? 0 : f > 0.25 ? 1 : 2;
-    if (mood !== c.mood) { c.mood = mood; c.el.querySelector('.person').innerHTML = personSVG(c, mood); if (mood === 2) Sound.huff(); }
+    if (mood !== c.mood) {
+      c.mood = mood; const pe = c.el.querySelector('.person');
+      pe.innerHTML = personSVG(c, mood); pe.classList.toggle('angry', mood === 2);
+      if (mood === 2) Sound.huff();
+    }
     if (c.patience <= 0) { G.lost++; Sound.leave(); flash(`${c.name} left`, '#ffb3b3', true); leave(i, false); renderHud(); }
   });
   // coins collect themselves after a while
@@ -526,6 +563,8 @@ function tick(dt) {
 }
 
 // ---------- boot ----------
+$('backdrop').innerHTML = streetSVG();
+$('binBtn').innerHTML = `${BIN_SVG}<span class="lbl">Bin</span>`;
 showMenu();
 requestAnimationFrame(loop);
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
