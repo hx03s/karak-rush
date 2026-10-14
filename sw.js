@@ -1,5 +1,5 @@
 // Network first, cached copy when offline. Bump CACHE when you ship a big change.
-const CACHE = 'karak-rush-v1';
+const CACHE = 'karak-rush-v2';
 const ASSETS = [
   './', './index.html', './css/style.css',
   './js/storage.js', './js/audio.js', './js/data.js', './js/main.js',

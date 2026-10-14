@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <title>Karak Rush</title>
-  <meta name="description" content="Run a roadside karak stall in Bahrain. Cars honk, orders pile up. Make every cup right, and fast.">
+  <meta name="description" content="Run a karak stall in Bahrain: brew, pour, cook paratha and samosa, and keep every customer happy.">
   <meta name="theme-color" content="#0f2a2e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Karak Rush">
@@ -18,29 +18,49 @@
 <body>
   <div id="app">
     <header class="top">
-      <div class="chip"><span>Day</span><b id="day">1</b></div>
+      <button class="hud lvl" id="pauseBtn" type="button" aria-label="Pause"><span>Level</span><b id="lvl">1</b></button>
       <div class="goal">
-        <div class="row"><span id="earned">BD 0.000</span><span>Target <b id="goalTxt">BD 1.500</b></span></div>
-        <div class="goalbar"><i id="goalBar"></i></div>
-        <div class="strikes" id="strikes" aria-label="Strikes"></div>
+        <div class="row"><span><span class="coin"></span><b id="earned">0.000</b></span><span id="custLeft">0 / 0</span></div>
+        <div class="goalbar"><i id="goalBar"></i><em id="star1"></em><em id="star2"></em><em id="star3"></em></div>
       </div>
-      <button class="chip" id="clockBtn" aria-label="Pause" style="background:rgba(0,0,0,.28);box-shadow:none;padding:5px 10px;font-family:var(--body);text-align:right">
-        <span>Pause</span><b id="clock">9:00pm</b></button>
     </header>
 
-    <section class="road" id="road" aria-label="Cars waiting">
-      <div class="slot"></div><div class="slot"></div><div class="slot"></div>
+    <section class="street">
+      <div class="awning" aria-hidden="true"></div>
+      <div class="spots" id="spots">
+        <div class="spot"></div><div class="spot"></div><div class="spot"></div>
+      </div>
+      <div class="ledge" id="ledge">
+        <div class="cash"></div><div class="cash"></div><div class="cash"></div>
+      </div>
     </section>
 
-    <section class="counter">
-      <div class="bench">
-        <div class="cup" id="cup"></div>
-        <div class="tray"><div class="label">Your cup</div><ul id="trayList"></ul></div>
+    <section class="kitchen" id="kitchen">
+      <div class="k-row drinks">
+        <button class="station pot" id="pot" type="button" aria-label="Karak pot"></button>
+        <div class="cups" id="cups">
+          <button class="cupslot" data-i="0" type="button"></button>
+          <button class="cupslot" data-i="1" type="button"></button>
+          <button class="cupslot" data-i="2" type="button"></button>
+        </div>
       </div>
-      <div class="keys" id="keys"></div>
-      <div class="acts">
-        <button class="bin" id="bin" type="button">Bin</button>
-        <button class="serve" id="serve" type="button">Serve</button>
+      <div class="k-row adds" id="adds"></div>
+      <div class="k-row food">
+        <div class="cook" id="griddleBox">
+          <button class="supply" id="doughBtn" type="button"></button>
+          <div class="pan griddle" id="griddle"><button class="ck" data-i="0" type="button"></button><button class="ck" data-i="1" type="button"></button></div>
+        </div>
+        <div class="cook" id="fryerBox">
+          <button class="supply" id="samosaBtn" type="button"></button>
+          <div class="pan fryer" id="fryer"><button class="ck" data-i="0" type="button"></button><button class="ck" data-i="1" type="button"></button></div>
+        </div>
+      </div>
+      <div class="k-row last">
+        <button class="supply wide" id="chipsBtn" type="button"></button>
+        <div class="warmer" id="warmer"><span class="wlabel">Warmer</span><button class="wm" data-i="0" type="button"></button><button class="wm" data-i="1" type="button"></button></div>
+        <button class="binbtn" id="binBtn" type="button" aria-label="Throw away the selected cup">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 9h18l-2 19H9z" fill="#7d8b96"/><rect x="5" y="6" width="22" height="4" rx="2" fill="#5b676c"/><path d="M13 13v11M19 13v11" stroke="#4a5458" stroke-width="2"/></svg>
+          <span>Bin</span></button>
       </div>
     </section>
 

@@ -39,5 +39,12 @@ const Sound = (() => {
     bin: () => noise(0.18, 0.08, 400),
     bell: () => [880, 1109, 1319].forEach((f, i) => tone(f, 0.35, 'triangle', 0.07, i * 0.12)),
     click: () => tone(660, 0.05, 'square', 0.03),
+    coin: () => { tone(1976, 0.06, 'square', 0.04); tone(2637, 0.18, 'square', 0.04, 0.06); },
+    plop: () => tone(520, 0.08, 'sine', 0.09, 0, 900),
+    nope: () => tone(200, 0.15, 'square', 0.05),
+    sizzle: () => noise(0.5, 0.05, 4000),
+    ding: () => tone(1318, 0.25, 'triangle', 0.08),
+    burn: () => { noise(0.3, 0.06, 2500); tone(300, 0.3, 'sawtooth', 0.04, 0, 150); buzz(50); },
+    huff: () => tone(330, 0.2, 'triangle', 0.05, 0, 220),
   };
 })();
