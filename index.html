@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <title>Karak Rush</title>
+  <meta name="description" content="Run a roadside karak stall in Bahrain. Cars honk, orders pile up. Make every cup right, and fast.">
+  <meta name="theme-color" content="#0f2a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Karak Rush">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Rubik:wght@400;600;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="top">
+      <div class="chip"><span>Day</span><b id="day">1</b></div>
+      <div class="goal">
+        <div class="row"><span id="earned">BD 0.000</span><span>Target <b id="goalTxt">BD 1.500</b></span></div>
+        <div class="goalbar"><i id="goalBar"></i></div>
+        <div class="strikes" id="strikes" aria-label="Strikes"></div>
+      </div>
+      <button class="chip" id="clockBtn" aria-label="Pause" style="background:rgba(0,0,0,.28);box-shadow:none;padding:5px 10px;font-family:var(--body);text-align:right">
+        <span>Pause</span><b id="clock">9:00pm</b></button>
+    </header>
+
+    <section class="road" id="road" aria-label="Cars waiting">
+      <div class="slot"></div><div class="slot"></div><div class="slot"></div>
+    </section>
+
+    <section class="counter">
+      <div class="bench">
+        <div class="cup" id="cup"></div>
+        <div class="tray"><div class="label">Your cup</div><ul id="trayList"></ul></div>
+      </div>
+      <div class="keys" id="keys"></div>
+      <div class="acts">
+        <button class="bin" id="bin" type="button">Bin</button>
+        <button class="serve" id="serve" type="button">Serve</button>
+      </div>
+    </section>
+
+    <div class="overlay" id="ov"><div class="card" id="card"></div></div>
+  </div>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
