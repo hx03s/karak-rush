@@ -46,5 +46,74 @@ const Sound = (() => {
     ding: () => tone(1318, 0.25, 'triangle', 0.08),
     burn: () => { noise(0.3, 0.06, 2500); tone(300, 0.3, 'sawtooth', 0.04, 0, 150); buzz(50); },
     huff: () => tone(330, 0.2, 'triangle', 0.05, 0, 220),
+    audio,
+  };
+})();
+
+// Customer voices: a synthesised angry "Arrr!" growl, and a spoken "Cancel! Cancel!" when they walk off.
+const Voice = (() => {
+  // pitch of each character's voice (Hz for the growl, 0-2 for speech)
+  const VOICE = {
+    man: { hz: 120, pitch: 0.75, rate: 1.15 },
+    grandpa: { hz: 95, pitch: 0.5, rate: 0.9 },
+    woman: { hz: 210, pitch: 1.25, rate: 1.2 },
+    teen: { hz: 260, pitch: 1.5, rate: 1.3 },
+    kid: { hz: 300, pitch: 1.8, rate: 1.35 },
+  };
+  const v = (kind) => VOICE[kind] || VOICE.man;
+  const synth = typeof window !== 'undefined' && window.speechSynthesis;
+  let voices = [];
+  const loadVoices = () => { try { voices = synth.getVoices(); } catch (e) {} };
+  if (synth) { loadVoices(); try { synth.onvoiceschanged = loadVoices; } catch (e) {} }
+
+  // "Arrr!": a buzzy voice pushed through two vowel-like filters, wobbling and sliding down.
+  function growl(kind) {
+    const a = Sound.audio(); if (!a) return;
+    const { hz } = v(kind), t = a.currentTime, dur = 0.75;
+    const o = a.createOscillator(), wob = a.createOscillator(), wobGain = a.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(hz * 1.15, t);
+    o.frequency.linearRampToValueAtTime(hz * 1.3, t + 0.12);
+    o.frequency.exponentialRampToValueAtTime(hz * 0.8, t + dur);
+    wob.frequency.value = 28; wobGain.gain.value = hz * 0.09; // rolled "rrr"
+    wob.connect(wobGain).connect(o.frequency);
+    const f1 = a.createBiquadFilter(), f2 = a.createBiquadFilter(), g = a.createGain(), mix = a.createGain();
+    f1.type = 'bandpass'; f1.frequency.value = 750; f1.Q.value = 6;   // "a"
+    f2.type = 'bandpass'; f2.frequency.value = 1250; f2.Q.value = 7;
+    f1.frequency.linearRampToValueAtTime(560, t + dur);                 // → "r"
+    f2.frequency.linearRampToValueAtTime(1400, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.5, t + 0.05);
+    g.gain.setValueAtTime(0.5, t + dur * 0.7);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    mix.gain.value = 0.9;
+    o.connect(f1).connect(g); o.connect(f2).connect(g); g.connect(mix).connect(a.destination);
+    o.start(t); wob.start(t); o.stop(t + dur + 0.05); wob.stop(t + dur + 0.05);
+    Sound.buzz([40, 30, 40]);
+  }
+
+  function say(text, kind, rateBoost = 1) {
+    if (!Store.data.sound || !synth) return false;
+    try {
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      const en = voices.filter((x) => /^en/i.test(x.lang));
+      const pick = en.find((x) => /male|daniel|fred|alex|google uk english male/i.test(x.name) && ['man', 'grandpa'].includes(kind))
+        || en.find((x) => /female|samantha|karen|google us english/i.test(x.name) && !['man', 'grandpa'].includes(kind)) || en[0];
+      if (pick) u.voice = pick;
+      u.lang = pick ? pick.lang : 'en-US';
+      u.pitch = v(kind).pitch; u.rate = v(kind).rate * rateBoost; u.volume = 1;
+      synth.speak(u);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  return {
+    // Mobile browsers only allow speech after a tap, so prime it on the first touch.
+    unlock() { if (synth) { try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch (e) {} } },
+    angry(kind) { growl(kind); },
+    cancel(kind) {
+      if (!say('Cancel! Cancel!', kind, 1.15)) { growl(kind); setTimeout(() => growl(kind), 450); }
+    },
   };
 })();

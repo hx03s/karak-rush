@@ -581,7 +581,7 @@ $('chipsBtn').onclick = live(tapChips);
 document.querySelectorAll('.wm').forEach((b) => (b.onclick = live(() => tapWarmer(+b.dataset.i))));
 $('pauseBtn').onclick = pause; $('pauseBtn2').onclick = pause;
 document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
-document.addEventListener('pointerdown', () => Sound.unlock(), { once: true });
+document.addEventListener('pointerdown', () => { Sound.unlock(); Voice.unlock(); }, { once: true });
 
 // ---------- main loop ----------
 let last = performance.now();
@@ -615,8 +615,8 @@ function tick(dt) {
     bar.style.width = `${f * 100}%`;
     bar.style.background = f > 0.55 ? '#5bb04a' : f > 0.25 ? '#f5b301' : '#e8553e';
     const mood = f > 0.55 ? 0 : f > 0.25 ? 1 : 2;
-    if (mood !== c.mood) { setMood(c, mood); if (mood === 2) Sound.huff(); }
-    if (c.patience <= 0) { G.lost++; Sound.leave(); flash(`${c.name} left`); leave(i, false); renderHud(); }
+    if (mood !== c.mood) { setMood(c, mood); if (mood === 2) Voice.angry(c.kind); }
+    if (c.patience <= 0) { G.lost++; Sound.leave(); Voice.cancel(c.kind); flash(`${c.name} left`); leave(i, false); renderHud(); }
   });
   G.piles.forEach((p, i) => { if (p && (p.t += dt) > 7) collect(i); });
   if (!G.ending && G.next >= G.list.length && G.spots.every((s) => !s)) {
