@@ -9,9 +9,13 @@ A time-management cooking game set at a karak stall in Bahrain. Customers line u
 - Serve everything in a bubble to get paid. Faster service means bigger tips, and customers who wait too long walk away.
 - Tap the coins on the counter to collect them. Earn enough for 1–3 stars to unlock the next level.
 
+## Art
+Soft-3D characters, food, kitchen equipment and backgrounds were generated with AI (Higgsfield, Z Image model), then cut out and optimised to WebP (about 0.5 MB in total) in `img/`.
+
 ## Features
 - **12 levels** with a level map, 1–3 stars each, and the same customers every time you replay a level.
-- **Original Bahraini characters:** men in ghutra and agal, women in hijab, kids. Their faces change as they lose patience.
+- **Five Bahraini customers:** a man in ghutra, a woman in hijab, a boy, a teen girl and a grandpa. Their faces change from happy to impatient, and angry customers shake.
+- **Clear glass building:** the glass sits big on a brass tray, sugar cubes and spices visibly drop in, and an order card ticks off what's done and says what's missing.
 - **Menu grows level by level:** karak, sugar, chips roll → cardamom → paratha → milk → saffron → samosa → ginger.
 - **Real prices in Bahraini dinar and fils.**
 - **Upgrades bought with saved coins:** bigger pot, gas stove, heavy griddle, plastic chairs.
@@ -21,7 +25,8 @@ A time-management cooking game set at a karak stall in Bahrain. Customers line u
 ```
 index.html            page shell: HUD, street & counter, kitchen stations
 css/style.css         all styling
-js/data.js            menu, prices, levels, upgrades and all the SVG drawings
+js/data.js            menu, prices, levels, upgrades and art file names
+img/                  characters, food, equipment and backgrounds (WebP)
 js/storage.js         saved progress (localStorage)
 js/audio.js           synthesised sound effects + vibration
 js/main.js            level generation, customers, kitchen logic, screens, main loop

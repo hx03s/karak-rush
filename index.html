@@ -4,99 +4,71 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <title>Karak Rush</title>
-  <meta name="description" content="Run a karak stall in Bahrain: brew, pour, cook paratha and samosa, and keep every customer happy.">
-  <meta name="theme-color" content="#0a1a33">
+  <meta name="description" content="Run a karak stall in a Bahraini souq: brew, pour, cook paratha and samosa, and keep every customer happy.">
+  <meta name="theme-color" content="#4a2e6e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Karak Rush">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Rubik:wght@400;600;800&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&family=Reem+Kufi:wght@700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- Shared gradients for every drawing in the game -->
-  <svg class="defs" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="gGlass" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".4" stop-color="#fff" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity=".35"/></linearGradient>
-      <linearGradient id="gKarak" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dc9a5a"/><stop offset="1" stop-color="#8f501d"/></linearGradient>
-      <linearGradient id="gKarakMilk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ecc195"/><stop offset="1" stop-color="#b47744"/></linearGradient>
-      <linearGradient id="gKarakSaffron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0ab4a"/><stop offset="1" stop-color="#ad5a17"/></linearGradient>
-      <linearGradient id="gPod" x1="0" x2="1"><stop offset="0" stop-color="#a9d98a"/><stop offset="1" stop-color="#4c8733"/></linearGradient>
-      <linearGradient id="gMetal" x1="0" x2="1"><stop offset="0" stop-color="#7d898e"/><stop offset=".3" stop-color="#eef3f5"/><stop offset=".6" stop-color="#b9c2c6"/><stop offset="1" stop-color="#6d797e"/></linearGradient>
-      <linearGradient id="gSteelDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#66737a"/><stop offset="1" stop-color="#2b3639"/></linearGradient>
-      <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".45" stop-color="#f7c823"/><stop offset="1" stop-color="#c48f00"/></linearGradient>
-      <radialGradient id="gParatha" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#f7d07a"/><stop offset=".7" stop-color="#dca047"/><stop offset="1" stop-color="#b9782c"/></radialGradient>
-      <linearGradient id="gSamosa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4bd63"/><stop offset="1" stop-color="#bf7426"/></linearGradient>
-      <linearGradient id="gBread" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbeccb"/><stop offset="1" stop-color="#ddbd80"/></linearGradient>
-      <linearGradient id="gGinger" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d097"/><stop offset="1" stop-color="#c58c48"/></linearGradient>
-      <linearGradient id="gThobe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9d5cb"/></linearGradient>
-      <linearGradient id="gGhutra" x1="0" x2="1"><stop offset="0" stop-color="#e6e2d8"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" stop-color="#dcd8cd"/></linearGradient>
-      <linearGradient id="gShade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".18"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
-      <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081631"/><stop offset=".6" stop-color="#163a5a"/><stop offset="1" stop-color="#2b5a6a"/></linearGradient>
-      <linearGradient id="gWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c0803f"/><stop offset="1" stop-color="#7a4a20"/></linearGradient>
-      <linearGradient id="gWoodV" x1="0" x2="1"><stop offset="0" stop-color="#6b3d17"/><stop offset=".5" stop-color="#b8773c"/><stop offset="1" stop-color="#6b3d17"/></linearGradient>
-      <linearGradient id="gAwningShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient>
-      <linearGradient id="gSaucer" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#d8ccb5"/></linearGradient>
-      <linearGradient id="gBowl" x1="0" x2="1"><stop offset="0" stop-color="#1f5f8b"/><stop offset=".4" stop-color="#4aa3e0"/><stop offset="1" stop-color="#1f5f8b"/></linearGradient>
-      <filter id="fBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
-      <filter id="fGlow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>
-  </svg>
-
   <div id="app">
-    <header class="top">
-      <button class="plank" id="pauseBtn" type="button" aria-label="Pause"><span>Level</span><b id="lvl">1</b><i class="pz" aria-hidden="true"></i></button>
+    <header class="hud">
+      <button class="lvl" id="pauseBtn" type="button" aria-label="Pause"><span>Level</span><b id="lvl">1</b></button>
       <div class="goal">
-        <div class="row"><span class="money" id="money"><span class="coinIcon"></span><b id="earned">0.000</b></span><span class="left" id="custLeft"></span></div>
-        <div class="goalbar"><i id="goalBar"></i><em id="star1"></em><em id="star2"></em><em id="star3"></em></div>
+        <div class="row"><span class="money" id="money"><i class="coin"></i><b id="earned">0.000</b></span><span class="served" id="served"></span></div>
+        <div class="bar"><i id="goalBar"></i><em id="star1"></em><em id="star2"></em><em id="star3"></em></div>
       </div>
+      <button class="pause" id="pauseBtn2" type="button" aria-label="Pause"><i></i><i></i></button>
     </header>
 
     <section class="street">
-      <div class="backdrop" id="backdrop"></div>
-      <div class="spots" id="spots">
-        <div class="spot"></div><div class="spot"></div><div class="spot"></div>
+      <div class="awning" aria-hidden="true"></div>
+      <div class="spots" id="spots"><div class="spot"></div><div class="spot"></div><div class="spot"></div></div>
+      <div class="counter"><div class="cash"></div><div class="cash"></div><div class="cash"></div></div>
+    </section>
+
+    <section class="kitchen">
+      <div class="prep">
+        <div class="tray" id="tray">
+          <span class="tlabel">Your glass</span>
+          <button class="bigglass" id="bigGlass" type="button" aria-label="Your glass"></button>
+          <div class="spares" id="spares">
+            <span class="tlabel small">Next</span>
+            <button class="spare" data-i="0" type="button"></button>
+            <button class="spare" data-i="1" type="button"></button>
+          </div>
+        </div>
+        <div class="card" id="orderCard"></div>
       </div>
-      <div class="ledge" id="ledge">
-        <div class="cash"></div><div class="cash"></div><div class="cash"></div>
+
+      <div class="tokens" id="tokens"></div>
+
+      <div class="stations">
+        <button class="st stove" id="pot" type="button" aria-label="Karak pot"></button>
+        <button class="st tawa" id="tawa" type="button" aria-label="Tawa"></button>
+        <button class="st fryer" id="fryer" type="button" aria-label="Fryer"></button>
+      </div>
+
+      <div class="supplies">
+        <button class="sup" id="doughBtn" type="button"></button>
+        <button class="sup" id="samosaBtn" type="button"></button>
+        <button class="sup" id="chipsBtn" type="button"></button>
+        <div class="warmer" id="warmer"><span>Warmer</span><button class="wm" data-i="0" type="button"></button><button class="wm" data-i="1" type="button"></button></div>
+        <button class="sup bin" id="binBtn" type="button" aria-label="Throw away the selected glass"></button>
       </div>
     </section>
 
-    <section class="kitchen" id="kitchen">
-      <div class="k-row drinks">
-        <button class="station pot" id="pot" type="button" aria-label="Karak pot"></button>
-        <div class="cups" id="cups">
-          <button class="cupslot" data-i="0" type="button"></button>
-          <button class="cupslot" data-i="1" type="button"></button>
-          <button class="cupslot" data-i="2" type="button"></button>
-        </div>
-      </div>
-      <div class="k-row adds" id="adds"></div>
-      <div class="k-row food">
-        <div class="cook" id="griddleBox">
-          <button class="supply" id="doughBtn" type="button"></button>
-          <div class="pan griddle" id="griddle"><button class="ck" data-i="0" type="button"></button><button class="ck" data-i="1" type="button"></button></div>
-        </div>
-        <div class="cook" id="fryerBox">
-          <button class="supply" id="samosaBtn" type="button"></button>
-          <div class="pan fryer" id="fryer"><button class="ck" data-i="0" type="button"></button><button class="ck" data-i="1" type="button"></button></div>
-        </div>
-      </div>
-      <div class="k-row last">
-        <button class="supply wide" id="chipsBtn" type="button"></button>
-        <div class="warmer" id="warmer"><span class="wlabel">Warmer</span><button class="wm" data-i="0" type="button"></button><button class="wm" data-i="1" type="button"></button></div>
-        <button class="binbtn" id="binBtn" type="button" aria-label="Throw away the selected cup"></button>
-      </div>
-    </section>
-
-    <div class="overlay" id="ov"><div class="card" id="card"></div></div>
+    <div class="overlay" id="ov"><div class="panel" id="card"></div></div>
   </div>
   <script src="js/storage.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/data.js"></script>
-  <script src="js/art.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
