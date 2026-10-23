@@ -1,6 +1,20 @@
+<div align="center">
+
+<img src="docs/gameplay.jpg" alt="Karak Rush" width="32%">
+<img src="docs/menu.jpg" alt="Karak Rush" width="32%">
+
 # Karak Rush · كرك رش
 
-A time-management cooking game set at a karak stall in Bahrain. Customers line up at your window with order bubbles. You brew karak, pour cups, add sugar and spices, cook paratha and samosa before they burn, and collect your coins before the next customer walks up.
+**A time-management cooking game at a karak stall in Bahrain. Brew, pour, fry and serve before your customers walk away.**
+
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white" alt="JavaScript"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5"> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"> <img src="https://img.shields.io/badge/Web%20Audio-555555?style=for-the-badge" alt="Web Audio"> <img src="https://img.shields.io/badge/PWA-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA">
+
+[**▶ Play now**](https://karak-rush.vercel.app)
+
+</div>
+
+
+Customers line up at your window with order bubbles. You brew karak, pour cups, add sugar and spices, cook paratha and samosa before they burn, and collect your fils. It plays on a phone, a tablet or a desktop, and installs to your home screen.
 
 ## How to play
 - **Karak:** tap the pot to brew, tap again to pour a cup. Sugar and spices go into the highlighted cup. Tap a finished cup to hand it over.
@@ -37,3 +51,11 @@ icons/                app icons
 
 ## Deploy
 Static site with no build step. Import the repo on [vercel.com/new](https://vercel.com/new) with the default settings, or open `index.html` through any static server.
+
+---
+
+<div align="center">
+
+Built by **Hasan Abdulla** · [github.com/hx03s](https://github.com/hx03s) · Bahrain 🇧🇭
+
+</div>
