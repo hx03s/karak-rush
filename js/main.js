@@ -97,7 +97,17 @@ function takeBoosts() {
   pendingBoosts = {}; Store.save();
   return got;
 }
+// Sideways in a browser: go full screen so the browser bar doesn't eat the stall.
+function goFullscreen() {
+  try {
+    const de = document.documentElement;
+    if (!matchMedia('(orientation: landscape)').matches || document.fullscreenElement || !de.requestFullscreen) return;
+    if (matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches) return;
+    de.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
+  } catch (e) {}
+}
 function begin(state, bg, night, extraDecor) {
+  goFullscreen();
   G = state; G.boost = takeBoosts();
   paused = false; ov.hidden = true; ov.classList.remove('menu');
   document.querySelectorAll('.spot,.cash').forEach((s) => (s.innerHTML = ''));
@@ -656,28 +666,30 @@ function showHow(thenPlay) {
   bind('go', () => { S.seenHow = true; Store.save(); thenPlay ? showIntro(maxLevel()) : showMenu(); });
 }
 
+const LOCK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 function showMap(focus) {
   previewKitchen();
-  const pi = placeIndex(focus || maxLevel());
+  const pi = placeIndex(focus || maxLevel()), next = maxLevel();
   const sections = PLACES.map((p, idx) => {
     const from = idx * PER_PLACE + 1, unlocked = S.unlocked >= from;
     const stars = Array.from({ length: PER_PLACE }, (_, k) => S.stars[from + k] || 0).reduce((a, b) => a + b, 0);
     const btns = Array.from({ length: PER_PLACE }, (_, k) => {
       const l = from + k, ok = l <= S.unlocked, st = S.stars[l] || 0;
-      return `<button class="lv${l === S.unlocked ? ' next' : ''}" data-l="${l}" ${ok ? '' : 'disabled'} type="button">
+      return `<button class="lv${l === S.unlocked ? ' next' : ''}" data-l="${l}" ${ok ? '' : 'disabled'} type="button" aria-label="Level ${l}">
         <b>${l}</b><div class="s">${[0, 1, 2].map((s) => `<i class="${s < st ? 'on' : ''}"></i>`).join('')}</div></button>`;
     }).join('');
-    return `<section class="place${unlocked ? '' : ' locked'}${idx === pi ? ' focus' : ''}" style="--pc:${p.color}">
-      <div class="phead" style="background-image:url(${IMG(p.bg)})"><div><b>${esc(p.name)}</b><span>${p.ar}</span></div><em>${unlocked ? `${stars}/36 ★` : `🔒 Finish level ${from - 1}`}</em></div>
-      ${unlocked ? `<div class="map">${btns}</div>` : ''}</section>`;
+    return `<section class="place2${unlocked ? '' : ' locked'}${idx === pi ? ' focus' : ''}">
+      <div class="phead2" style="background-image:url(${IMG(p.bg)})"><div><b>${esc(p.name)}</b><span>${p.ar} · ${esc(p.tag)}</span></div>
+        <em>${unlocked ? `${stars}/36 ★` : `${LOCK} Finish level ${from - 1}`}</em></div>
+      ${unlocked ? `<div class="lvgrid">${btns}</div>` : ''}</section>`;
   }).join('');
-  setScreen(`<div class="ribbon">Pick a level</div>
-    <div class="wallet"><i class="coin"></i>${fils(S.wallet)} BD</div>
-    ${sections}
-    <div class="stack"><div class="row2"><button class="btn gold" id="shop">Shop</button><button class="btn ghost" id="back">Main menu</button></div></div>`, true);
+  setScreen(`<div class="shophead"><b>Pick a level</b><span class="wallet2"><i class="coin"></i>${fils(S.wallet)} BD</span></div>
+    <div class="sheet-body" id="mapBody">${sections}</div>
+    <div class="sheet-foot"><button class="btn ghost-b" id="back" type="button">Menu</button><button class="btn green" id="start" type="button">Play level ${next}</button></div>`, true, 'sheet');
   panel.querySelectorAll('.lv').forEach((b) => (b.onclick = () => { Sound.click(); showIntro(+b.dataset.l); }));
-  const f = panel.querySelector('.place.focus'); if (f) setTimeout(() => f.scrollIntoView({ block: 'start' }), 30);
-  bind('shop', () => showShop(showMap));
+  const f = panel.querySelector('.place2.focus'), body = $('mapBody');
+  if (f && body) body.scrollTop = Math.max(0, f.offsetTop - body.offsetTop - 6);
+  bind('start', () => showIntro(next));
   bind('back', showMenu);
 }
 

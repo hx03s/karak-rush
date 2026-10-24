@@ -367,19 +367,47 @@ img{display:block;max-width:100%;pointer-events:none;-webkit-user-drag:none}
   .sheet-foot{padding:8px 14px 10px}
 }
 
+
+/* level map v2 */
+.place2{margin-bottom:12px;border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 4px 0 var(--ink)}
+.place2:last-child{margin-bottom:4px}
+.phead2{position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:8px;min-height:74px;padding:8px 12px;background:center 45%/cover;color:#fff}
+.phead2::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 15%,rgba(30,15,40,.8))}
+.phead2>*{position:relative}
+.phead2 b{display:block;font-family:var(--display);font-weight:400;font-size:22px;line-height:1;text-shadow:0 2px 0 var(--ink)}
+.phead2 span{font-size:11.5px;font-weight:700}
+.phead2 em{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;font-style:normal;font-weight:800;font-size:12px;background:rgba(46,26,71,.9);border:2px solid var(--ink);border-radius:10px;padding:1px 8px}
+.place2.locked .phead2{filter:grayscale(.85) brightness(.9);min-height:56px}
+.lvgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:10px}
+.lvgrid .lv{padding:4px 0 5px;border-width:2.5px;border-radius:12px;box-shadow:0 3px 0 var(--ink)}
+.lvgrid .lv b{font-size:19px}
+.lvgrid .lv .s i{width:9px;height:9px}
+.lvgrid .lv:disabled{opacity:.35;box-shadow:none}
+
 /* ---------- sideways phone (Landscape A): street + stations on the left, prep on the right ---------- */
 @media (orientation:landscape) and (min-aspect-ratio:5/4){
   body{display:flex;align-items:center}
-  #app{max-width:1100px;height:min(100%,640px);width:100%;display:grid;grid-template-columns:minmax(0,1fr) clamp(290px,36%,400px);grid-template-rows:auto minmax(0,1fr) minmax(96px,29%);
+  #app{max-width:1100px;height:min(100%,640px);width:100%;display:grid;grid-template-columns:minmax(0,1fr) clamp(290px,36%,400px);grid-template-rows:auto minmax(0,1fr) minmax(78px,27%);
     grid-template-areas:"hud side" "street side" "stations side";
     background:linear-gradient(rgba(255,241,218,.7),rgba(255,241,218,.85)),url(../img/bg-wall.webp) center/cover}
-  .hud{grid-area:hud;padding:5px 10px 6px;border-right:4px solid var(--ink);border-bottom-width:3px}
+  .hud{grid-area:hud;padding:4px 10px;border-right:4px solid var(--ink);border-bottom-width:3px}
+  .goal{display:flex;align-items:center;gap:10px}.goal .row{flex:0 0 auto;gap:10px}.bar{flex:1;margin-top:0}
+  .counter{height:18px;background:linear-gradient(var(--wood) 0 8px,var(--ink) 8px 10px,var(--teal) 10px)}
+  .pile img{height:28px}.pile{margin-bottom:2px}
+  .bubble{flex-wrap:nowrap;padding:3px 5px 8px;margin-bottom:4px;border-width:2.5px;border-radius:12px;box-shadow:0 3px 0 var(--ink)}
+  .bubble::after{bottom:-9px;border-width:7px}
+  .oi .g{height:28px}.oi .f{height:22px;max-width:34px}.oi .adds img{width:12px;height:12px}.oi .adds span{font-size:9px}
+  .pbar{height:4px;bottom:2px}
+  .person{flex:1 1 0;min-height:44px}
+  .tag{font-size:11px;top:-13px;padding:0 6px}
+  .lvgrid{grid-template-columns:repeat(12,1fr)}
+  .phead2{min-height:56px}
   .lvl{padding:0 10px 1px}.lvl b{font-size:18px}.lvl span{font-size:8px}
   .pause{width:34px;height:34px}
   .bar{margin-top:4px;height:10px}
   .street{grid-area:street;flex:none;border-right:4px solid var(--ink);min-height:0}
-  .awning{height:16px}
-  .spots{top:20px;bottom:28px;left:12%;right:12%}
+  .awning{height:10px}
+  .spots{top:12px;bottom:18px;left:10%;right:10%}
   .kitchen{display:contents}
   .stations{grid-area:stations;padding:8px;border-right:4px solid var(--ink);min-height:0}
   .st{padding:4px 4px 22px}
@@ -401,6 +429,13 @@ img{display:block;max-width:100%;pointer-events:none;-webkit-user-drag:none}
   .supplies{flex:0 0 clamp(56px,17%,80px)}
   .sup{padding-bottom:13px}.sup .pill{font-size:9.5px}
   .toasts{left:auto;right:10px;width:min(360px,60%)}
+}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:380px){
+  .brand .logo{font-size:32px;-webkit-text-stroke:1.5px var(--ink);text-shadow:0 3px 0 var(--ink)}
+  .brand .artag{font-size:15px;padding:0 10px 2px}
+  .brand .bl{gap:5px;padding-bottom:6px}
+  .home{gap:8px 16px}.chip{font-size:13px}.round{width:36px;height:36px}
+  .pt b{font-size:24px}.pthumb{width:40px;height:40px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important}.fly{transition:none}}
 
