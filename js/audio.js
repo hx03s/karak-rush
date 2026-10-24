@@ -46,6 +46,8 @@ const Sound = (() => {
     ding: () => tone(1318, 0.25, 'triangle', 0.08),
     burn: () => { noise(0.3, 0.06, 2500); tone(300, 0.3, 'sawtooth', 0.04, 0, 150); buzz(50); },
     huff: () => tone(330, 0.2, 'triangle', 0.05, 0, 220),
+    fanfare: () => [784, 988, 1175, 1568].forEach((f, i) => tone(f, i === 3 ? 0.45 : 0.14, 'square', 0.045, i * 0.11)),
+    heart: () => { tone(330, 0.25, 'triangle', 0.08, 0, 160); buzz([80, 50, 80]); },
     audio,
   };
 })();
@@ -59,7 +61,13 @@ const Voice = (() => {
     woman: { hz: 210, pitch: 1.25, rate: 1.2 },
     teen: { hz: 260, pitch: 1.5, rate: 1.3 },
     kid: { hz: 300, pitch: 1.8, rate: 1.35 },
+    worker: { hz: 115, pitch: 0.7, rate: 1.1 },
+    rider: { hz: 140, pitch: 0.9, rate: 1.45 },
+    tourist: { hz: 130, pitch: 0.85, rate: 1 },
+    granny: { hz: 230, pitch: 1.05, rate: 0.85 },
+    vip: { hz: 100, pitch: 0.6, rate: 0.95 },
   };
+  const MALE = ['man', 'grandpa', 'worker', 'rider', 'tourist', 'vip'];
   const v = (kind) => VOICE[kind] || VOICE.man;
   const synth = typeof window !== 'undefined' && window.speechSynthesis;
   let voices = [];
@@ -98,8 +106,8 @@ const Voice = (() => {
       synth.cancel();
       const u = new SpeechSynthesisUtterance(text);
       const en = voices.filter((x) => /^en/i.test(x.lang));
-      const pick = en.find((x) => /male|daniel|fred|alex|google uk english male/i.test(x.name) && ['man', 'grandpa'].includes(kind))
-        || en.find((x) => /female|samantha|karen|google us english/i.test(x.name) && !['man', 'grandpa'].includes(kind)) || en[0];
+      const pick = en.find((x) => /male|daniel|fred|alex|google uk english male/i.test(x.name) && MALE.includes(kind))
+        || en.find((x) => /female|samantha|karen|google us english/i.test(x.name) && !MALE.includes(kind)) || en[0];
       if (pick) u.voice = pick;
       u.lang = pick ? pick.lang : 'en-US';
       u.pitch = v(kind).pitch; u.rate = v(kind).rate * rateBoost; u.volume = 1;

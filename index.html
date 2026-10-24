@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <title>Karak Rush</title>
-  <meta name="description" content="Run a karak stall in a Bahraini souq: brew, pour, cook paratha and samosa, and keep every customer happy.">
+  <meta name="description" content="Run a karak stall across Bahrain: 48 levels from Manama Souq to Sakhir Camp, Endless Rush, decorations and special nights.">
   <meta name="theme-color" content="#4a2e6e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Karak Rush">
@@ -19,7 +19,7 @@
 <body>
   <div id="app">
     <header class="hud">
-      <button class="lvl" id="pauseBtn" type="button" aria-label="Pause"><span>Level</span><b id="lvl">1</b></button>
+      <button class="lvl" id="pauseBtn" type="button" aria-label="Pause"><span id="lvlLabel">Level</span><b id="lvl">1</b></button>
       <div class="goal">
         <div class="row"><span class="money" id="money"><i class="coin"></i><b id="earned">0.000</b></span><span class="served" id="served"></span></div>
         <div class="bar"><i id="goalBar"></i><em id="star1"></em><em id="star2"></em><em id="star3"></em></div>
@@ -29,6 +29,7 @@
 
     <section class="street">
       <div class="awning" aria-hidden="true"></div>
+      <div class="decor" id="decor" aria-hidden="true"></div>
       <div class="spots" id="spots"><div class="spot"></div><div class="spot"></div><div class="spot"></div></div>
       <div class="counter"><div class="cash"></div><div class="cash"></div><div class="cash"></div></div>
     </section>
@@ -53,18 +54,21 @@
         <button class="st stove" id="pot" type="button" aria-label="Karak pot"></button>
         <button class="st tawa" id="tawa" type="button" aria-label="Tawa"></button>
         <button class="st fryer" id="fryer" type="button" aria-label="Fryer"></button>
+        <div class="warmer" id="warmer"><span>Warmer</span><button class="wm" data-i="0" type="button"></button><button class="wm" data-i="1" type="button"></button></div>
       </div>
 
       <div class="supplies">
         <button class="sup" id="doughBtn" type="button"></button>
+        <button class="sup" id="chickenBtn" type="button"></button>
         <button class="sup" id="samosaBtn" type="button"></button>
         <button class="sup" id="chipsBtn" type="button"></button>
-        <div class="warmer" id="warmer"><span>Warmer</span><button class="wm" data-i="0" type="button"></button><button class="wm" data-i="1" type="button"></button></div>
+        <button class="sup" id="balaleetBtn" type="button"></button>
         <button class="sup bin" id="binBtn" type="button" aria-label="Throw away the selected glass"></button>
       </div>
     </section>
 
     <div class="overlay" id="ov"><div class="panel" id="card"></div></div>
+    <div class="toasts" id="toasts" aria-live="polite"></div>
   </div>
   <script src="js/storage.js"></script>
   <script src="js/audio.js"></script>

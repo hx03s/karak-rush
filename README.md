@@ -17,23 +17,23 @@
 Customers line up at your window with order bubbles. You brew karak, pour cups, add sugar and spices, cook paratha and samosa before they burn, and collect your fils. It plays on a phone, a tablet or a desktop, and installs to your home screen.
 
 ## How to play
-- **Karak:** tap the pot to brew, tap again to pour a cup. Sugar and spices go into the highlighted cup. Tap a finished cup to hand it over.
-- **Paratha & samosa:** tap the supply to put it on the griddle or in the fryer. Tap it when it glows to serve it. Leave it too long and it burns.
-- **Chips roll** is ready straight away. Extra food waits in the **warmer**.
+- **Karak:** tap the pot to brew, tap again to pour a glass. Add sugar, spices and ice to the glass on your tray, and the order card shows what's still missing.
+- **Paratha & chicken roll** cook on the tawa, **samosa** in the fryer. Tap them when they glow, before they burn. **Chips roll** and **balaleet** are ready straight away. Extra food waits in the **warmer**.
 - Serve everything in a bubble to get paid. Faster service means bigger tips, and customers who wait too long walk away.
-- Tap the coins on the counter to collect them. Earn enough for 1–3 stars to unlock the next level.
+- Tap the coins on the counter. Earn enough for 1–3 stars to unlock the next level.
 
 ## Art
 Soft-3D characters, food, kitchen equipment and backgrounds were generated with AI (Higgsfield, Z Image model), then cut out and optimised to WebP (about 0.5 MB in total) in `img/`.
 
 ## Features
-- **12 levels** with a level map, 1–3 stars each, and the same customers every time you replay a level.
-- **Five Bahraini customers:** a man in ghutra, a woman in hijab, a boy, a teen girl and a grandpa. Their faces change from happy to impatient, and angry customers shake.
-- **Clear glass building:** the glass sits big on a brass tray, sugar cubes and spices visibly drop in, and an order card ticks off what's done and says what's missing.
-- **Menu grows level by level:** karak, sugar, chips roll → cardamom → paratha → milk → saffron → samosa → ginger.
-- **Real prices in Bahraini dinar and fils.**
-- **Upgrades bought with saved coins:** bigger pot, gas stove, heavy griddle, plastic chairs.
-- Progress is saved on the device. Sound effects are made with Web Audio (no audio files), plus vibration, pause, and you can install it on your home screen.
+- **4 places, 48 levels:** Manama Souq, Muharraq old town, the Corniche and Sakhir desert camp, 12 levels each, 1–3 stars per level.
+- **10 customer types:** the souq regulars plus a construction worker, a delivery rider in a hurry, a big-tipping tourist, a very patient grandma and a VIP who tips 3× but hates waiting.
+- **A growing menu:** karak with sugar, cardamom, milk, saffron, ginger and ice, plus chips roll, paratha, samosa, chicken roll and balaleet.
+- **Endless Rush:** customers keep coming, faster and faster, until 3 walk off. Beat your best.
+- **Special nights:** Ramadan Night and National Day. They pay double when the real date comes around.
+- **Shop:** kitchen upgrades and 8 decorations that show up on your stall, each with a small bonus. Boosts for a single round.
+- **Daily gift** that grows over 7 days, and **21 achievements** with coin rewards.
+- Customer voices, Web Audio sound effects (no audio files), vibration, pause, progress saved on the device, and installable to the home screen.
 
 ## Project structure
 ```
