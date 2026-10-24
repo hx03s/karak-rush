@@ -417,6 +417,7 @@ function renderTokens() {
 }
 function renderCard() {
   const card = $('orderCard'); if (!G) { card.innerHTML = ''; return; }
+  renderTokens();
   const cup = G.cups[G.sel], t = drinkTarget(cup);
   card.classList.remove('ok');
   if (!t) { card.innerHTML = `<div class="none">No karak orders right now.<br>Serve the food!</div>`; highlight(null); return; }

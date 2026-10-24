@@ -33,6 +33,7 @@ Soft-3D characters, food, kitchen equipment and backgrounds were generated with 
 - **Special nights:** Ramadan Night and National Day. They pay double when the real date comes around.
 - **Shop:** kitchen upgrades and 8 decorations that show up on your stall, each with a small bonus. Boosts for a single round.
 - **Daily gift** that grows over 7 days, and **21 achievements** with coin rewards.
+- **Plays upright or sideways:** turn the phone and the stall rearranges, with customers and cooking on the left and your glass, ingredients and supplies on the right.
 - Customer voices, Web Audio sound effects (no audio files), vibration, pause, progress saved on the device, and installable to the home screen.
 
 ## Project structure

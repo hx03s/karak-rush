@@ -35,35 +35,37 @@
     </section>
 
     <section class="kitchen">
-      <div class="prep">
-        <div class="tray" id="tray">
-          <span class="tlabel">Your glass</span>
-          <button class="bigglass" id="bigGlass" type="button" aria-label="Your glass"></button>
-          <div class="spares" id="spares">
-            <span class="tlabel small">Next</span>
-            <button class="spare" data-i="0" type="button"></button>
-            <button class="spare" data-i="1" type="button"></button>
+      <div class="side">
+        <div class="prep">
+          <div class="tray" id="tray">
+            <span class="tlabel">Your glass</span>
+            <button class="bigglass" id="bigGlass" type="button" aria-label="Your glass"></button>
+            <div class="spares" id="spares">
+              <span class="tlabel small">Next</span>
+              <button class="spare" data-i="0" type="button"></button>
+              <button class="spare" data-i="1" type="button"></button>
+            </div>
           </div>
+          <div class="card" id="orderCard"></div>
         </div>
-        <div class="card" id="orderCard"></div>
-      </div>
 
-      <div class="tokens" id="tokens"></div>
+        <div class="tokens" id="tokens"></div>
+
+        <div class="supplies">
+          <button class="sup" id="doughBtn" type="button"></button>
+          <button class="sup" id="chickenBtn" type="button"></button>
+          <button class="sup" id="samosaBtn" type="button"></button>
+          <button class="sup" id="chipsBtn" type="button"></button>
+          <button class="sup" id="balaleetBtn" type="button"></button>
+          <button class="sup bin" id="binBtn" type="button" aria-label="Throw away the selected glass"></button>
+        </div>
+      </div>
 
       <div class="stations">
         <button class="st stove" id="pot" type="button" aria-label="Karak pot"></button>
         <button class="st tawa" id="tawa" type="button" aria-label="Tawa"></button>
         <button class="st fryer" id="fryer" type="button" aria-label="Fryer"></button>
         <div class="warmer" id="warmer"><span>Warmer</span><button class="wm" data-i="0" type="button"></button><button class="wm" data-i="1" type="button"></button></div>
-      </div>
-
-      <div class="supplies">
-        <button class="sup" id="doughBtn" type="button"></button>
-        <button class="sup" id="chickenBtn" type="button"></button>
-        <button class="sup" id="samosaBtn" type="button"></button>
-        <button class="sup" id="chipsBtn" type="button"></button>
-        <button class="sup" id="balaleetBtn" type="button"></button>
-        <button class="sup bin" id="binBtn" type="button" aria-label="Throw away the selected glass"></button>
       </div>
     </section>
 
