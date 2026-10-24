@@ -32,11 +32,11 @@ const KINDS = {
   kid: { from: 1, patience: 1, tip: 1 },
   teen: { from: 1, patience: 1, tip: 1 },
   grandpa: { from: 1, patience: 1, tip: 1 },
-  worker: { from: 13, patience: 1, tip: 0.9, food: 0.75, label: 'Hungry after a long shift' },
-  rider: { from: 13, patience: 0.7, tip: 1.3, label: 'In a hurry: short patience, good tips' },
-  tourist: { from: 25, patience: 1.15, tip: 1.8, label: 'Loves trying everything, tips big' },
-  granny: { from: 25, patience: 1.5, tip: 1.1, label: 'Very patient' },
-  vip: { from: 37, patience: 0.65, tip: 3, label: 'VIP: tips 3×, but hates waiting' },
+  worker: { from: 13, patience: 1, tip: 0.9, food: 0.75, name: 'Worker', label: 'Hungry after a long shift' },
+  rider: { from: 13, patience: 0.7, tip: 1.3, name: 'Delivery rider', label: 'In a hurry, tips well' },
+  tourist: { from: 25, patience: 1.15, tip: 1.8, name: 'Tourist', label: 'Tries everything, tips big' },
+  granny: { from: 25, patience: 1.5, tip: 1.1, name: 'Grandma', label: 'Very patient' },
+  vip: { from: 37, patience: 0.65, tip: 3, name: 'VIP', label: 'Tips 3×, hates waiting' },
 };
 const PEOPLE = {
   man: ['Abu Ali', 'Yousif', 'Hamad', 'Khalid', 'Salman', 'Faisal', 'Jassim', 'Ebrahim'],
@@ -76,6 +76,12 @@ const BOOSTS = {
   calm: { name: 'Free water', desc: 'Everyone waits 30% longer', cost: 300, icon: 'glass-empty' },
   tips: { name: 'Big smiles', desc: 'Double tips', cost: 400, icon: 'eq-coins' },
 };
+
+// One-line tips for things that join the menu.
+const ITEM_TIP = { karak: 'Brew in the pot, pour a glass', sugar: 'Up to 3 cubes', chips: 'Ready straight away', hail: 'A spice for the glass', paratha: 'Cooks on the tawa',
+  milk: 'Makes milk karak', zafran: 'Saffron karak', samosa: 'Fries in the fryer', ginger: 'A spice for the glass', chicken: 'Cooks on the tawa',
+  ice: 'Iced karak', balaleet: 'Ready straight away' };
+const UP_ICON = { pot: 'stove', stove: 'stove', griddle: 'food-paratha-pan', chairs: 'grandpa-happy' };
 
 const DAILY = [200, 300, 400, 500, 700, 900, 1500];
 

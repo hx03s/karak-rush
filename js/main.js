@@ -555,7 +555,7 @@ function checkAch() {
 }
 
 // ---------- screens ----------
-function setScreen(html, menu) { panel.innerHTML = html; ov.hidden = false; ov.scrollTop = 0; ov.classList.toggle('menu', !!menu); }
+function setScreen(html, menu, kind) { panel.className = `panel${kind ? ` ${kind}` : ''}`; panel.innerHTML = html; ov.hidden = false; ov.scrollTop = 0; ov.classList.toggle('menu', !!menu); }
 function bind(id, fn) { const el = $(id); if (el) el.onclick = () => { Sound.click(); fn(); }; }
 const totalStars = () => Object.values(S.stars).reduce((a, b) => a + b, 0);
 const starRow = (n) => `<div class="stars">${[0, 1, 2].map((k) => `<i class="${k < n ? 'on' : ''}"></i>`).join('')}</div>`;
@@ -573,30 +573,37 @@ function previewKitchen() {
   G = null;
 }
 
+const ICON = {
+  trophy: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M12 14v4M8 20h8"/></svg>',
+  sound: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+  mute: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>',
+  play: '<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
+};
+
 function showMenu() {
   previewKitchen(); paused = false;
   if (S.daily.last !== today()) { showDaily(); return; }
   const l = maxLevel(), pl = placeOf(l);
-  const liveEv = Object.keys(EVENTS).find((k) => EVENTS[k].live(new Date()));
-  setScreen(`
-    <div class="logo">Karak<span>Rush!</span></div>
-    <div class="artag">كرك رَش</div>
-    <div class="hero"><img src="${IMG('man-wave')}" alt=""><img class="gl" src="${IMG('glass-karak')}" alt=""></div>
-    <div class="stack">
-      <button class="btn gold big" id="play">PLAY<small>Level ${l} · ${esc(pl.name)}</small></button>
-      <div class="row2"><button class="btn teal" id="map">Level map</button><button class="btn coral" id="rush">Endless Rush<small>Best ${fils(S.endless.best)}</small></button></div>
-      <div class="row2"><button class="btn plum" id="events">Special nights${liveEv ? '<em class="live">LIVE</em>' : ''}</button><button class="btn green" id="shop">Shop</button></div>
-      <div class="row2"><button class="btn ghost-b" id="ach">🏆 ${Object.keys(S.ach).length}/${ACHIEVEMENTS.length}</button><button class="btn ghost-b" id="how">How to play</button></div>
+  const liveEv = Object.keys(EVENTS).some((k) => EVENTS[k].live(new Date()));
+  setScreen(`<div class="home">
+    <div class="chips">
+      <span class="chip"><i class="coin"></i>${fils(S.wallet)}</span>
+      <span class="chip">${totalStars()} ★</span>
+      <button class="chip" id="ach" type="button" aria-label="Achievements">${ICON.trophy}${Object.keys(S.ach).length}/${ACHIEVEMENTS.length}</button>
+      <span class="sp"></span>
+      <button class="round" id="set" type="button" aria-label="Sound and vibration settings">${S.sound ? ICON.sound : ICON.mute}</button>
     </div>
-    <div class="stats">
-      <div><b>${l}</b><span>Level</span></div>
-      <div><b>${totalStars()} ★</b><span>Stars</span></div>
-      <div><b>${fils(S.wallet)}</b><span>BD saved</span></div>
+    <div class="brand"><div class="bl"><div class="logo">Karak<span>Rush!</span></div><div class="artag">كرك رَش</div></div><img src="${IMG('man-wave')}" alt=""></div>
+    <button class="playbtn" id="play" type="button"><span class="pthumb" style="background-image:url(${IMG(pl.bg)})"></span>
+      <span class="pt"><b>PLAY</b><small>Level ${l} · ${esc(pl.name)}</small></span>${ICON.play}</button>
+    <div class="tiles">
+      <button class="tile teal" id="map" type="button"><img src="${IMG('decor-plant')}" alt=""><b>Level map</b><small>${PLACES.length} places · ${LEVELS} levels</small></button>
+      <button class="tile coral" id="rush" type="button"><img src="${IMG('rider-wait')}" alt=""><b>Endless Rush</b><small>Best ${fils(S.endless.best)}</small></button>
+      <button class="tile plum" id="events" type="button"><img src="${IMG('decor-lantern')}" alt="">${liveEv ? '<em class="live">LIVE</em>' : ''}<b>Special nights</b><small>Ramadan · National Day</small></button>
+      <button class="tile green" id="shop" type="button"><img src="${IMG('decor-radio')}" alt=""><b>Shop</b><small>Decorations · Upgrades</small></button>
     </div>
-    <div class="row2" style="margin-top:6px">
-      <button class="btn ghost" id="snd">Sound: ${S.sound ? 'On' : 'Off'}</button>
-      <button class="btn ghost" id="vib">Vibration: ${S.vibe ? 'On' : 'Off'}</button>
-    </div>`, true);
+    <button class="howbtn" id="how" type="button">How to play</button>
+  </div>`, true, 'home');
   bind('play', () => (S.seenHow ? showIntro(l) : showHow(true)));
   bind('map', showMap);
   bind('rush', showRushIntro);
@@ -604,8 +611,19 @@ function showMenu() {
   bind('shop', () => showShop(showMenu));
   bind('ach', showAch);
   bind('how', () => showHow(false));
-  $('snd').onclick = () => { S.sound = !S.sound; Store.save(); Sound.click(); showMenu(); };
-  $('vib').onclick = () => { S.vibe = !S.vibe; Store.save(); Sound.buzz(40); showMenu(); };
+  bind('set', showSettings);
+}
+
+function showSettings() {
+  setScreen(`<div class="ribbon">Settings</div>
+    <div class="stack" style="margin-top:8px">
+      <button class="btn ${S.sound ? 'green' : 'ghost-b'}" id="snd" type="button">Sound: ${S.sound ? 'On' : 'Off'}</button>
+      <button class="btn ${S.vibe ? 'green' : 'ghost-b'}" id="vib" type="button">Vibration: ${S.vibe ? 'On' : 'Off'}</button>
+      <button class="btn ghost" id="back" type="button">Back</button>
+    </div>`, true);
+  $('snd').onclick = () => { S.sound = !S.sound; Store.save(); Sound.click(); showSettings(); };
+  $('vib').onclick = () => { S.vibe = !S.vibe; Store.save(); Sound.buzz(40); showSettings(); };
+  bind('back', showMenu);
 }
 
 // Daily gift: a little more each day for 7 days in a row.
@@ -663,10 +681,19 @@ function showMap(focus) {
   bind('back', showMenu);
 }
 
+// Level, rush and event screens share one layout: picture header, content, and buttons that stay at the bottom.
+function sheet(o) {
+  return `<div class="sheet-hero" style="background-image:url(${IMG(o.bg)})">
+      <span class="lvtag">${o.tag}</span>${o.badge ? `<span class="newtag">${o.badge}</span>` : ''}
+      <b>${o.title}</b><span>${o.sub}</span></div>
+    <div class="sheet-body">${o.body}</div>
+    <div class="sheet-foot"><button class="btn ghost-b" id="back" type="button">Back</button><button class="btn ${o.startClass || 'green'}" id="start" type="button">${o.start}</button></div>`;
+}
+const targets = (stars) => `<div class="targets">${stars.map((s, k) => `<div><i>${'★'.repeat(k + 1)}</i><b>${fils(s)}</b></div>`).join('')}</div>`;
 function boostPicker() {
-  return `<div class="boosts"><p class="muted">Boosts for this round</p><div class="brow">${Object.entries(BOOSTS).map(([k, b]) =>
+  return `<div class="sec">Boosts for this round</div><div class="brows">${Object.entries(BOOSTS).map(([k, b]) =>
     `<button class="boost${pendingBoosts[k] ? ' on' : ''}" data-b="${k}" type="button" ${!pendingBoosts[k] && S.wallet < b.cost + spent() ? 'disabled' : ''}>
-      <img src="${IMG(b.icon)}" alt=""><b>${esc(b.name)}</b><span>${esc(b.desc)}</span><em>${fils(b.cost)}</em></button>`).join('')}</div></div>`;
+      <img src="${IMG(b.icon)}" alt=""><span><b>${esc(b.name)}</b> · ${esc(b.desc)}</span><em>${pendingBoosts[k] ? '✓ ' : ''}${fils(b.cost)}</em></button>`).join('')}</div>`;
 }
 const spent = () => Object.keys(pendingBoosts).filter((k) => pendingBoosts[k]).reduce((s, k) => s + BOOSTS[k].cost, 0);
 function wireBoosts(redraw) {
@@ -677,16 +704,17 @@ function showIntro(l) {
   const fresh = Object.keys(UNLOCK).filter((k) => UNLOCK[k] === l);
   const newKinds = Object.keys(KINDS).filter((k) => KINDS[k].from === l);
   const icon = (k) => IMG(k === 'karak' ? 'glass-karak' : ING[k] || FOOD[k]);
-  const { list, stars } = genLevel(l), pl = placeOf(l), firstOfPlace = localLevel(l) === 1;
-  setScreen(`<div class="ribbon">Level ${l}</div>
-    ${firstOfPlace ? `<div class="placecard" style="background-image:url(${IMG(pl.bg)})"><b>${l === 1 ? '' : 'New place! '}${esc(pl.name)}</b><span>${pl.ar} · ${esc(pl.tag)}</span></div>` : `<p class="muted">${esc(pl.name)}</p>`}
-    <div class="big">${list.length} customers</div><p class="muted">tonight at the stall</p>
-    ${fresh.length ? `<p class="muted">${l === 1 ? 'On the menu' : 'New on the menu'}:</p>
-      <div class="newitems">${fresh.map((k) => `<div><img src="${icon(k)}" alt="">${NAME[k]}</div>`).join('')}</div>` : ''}
-    ${newKinds.length ? `<p class="muted">New customers:</p><div class="newpeople">${newKinds.map((k) => `<div><img src="${IMG(`${k}-happy`)}" alt=""><span>${esc(KINDS[k].label || '')}</span></div>`).join('')}</div>` : ''}
-    <ul class="lines">${stars.map((s, k) => `<li><span>${'★'.repeat(k + 1)}</span><b>BD ${fils(s)}</b></li>`).join('')}</ul>
-    ${l > 2 ? boostPicker() : ''}
-    <div class="stack"><button class="btn green" id="start">Open the stall</button><button class="btn ghost" id="back">Back</button></div>`, true);
+  const { list, stars } = genLevel(l), pl = placeOf(l), firstOfPlace = localLevel(l) === 1 && l > 1;
+  const news = [
+    ...fresh.map((k) => `<div class="new food"><img src="${icon(k)}" alt=""><b>${NAME[k]}</b><span>${esc(ITEM_TIP[k] || '')}</span></div>`),
+    ...newKinds.map((k) => `<div class="new"><img src="${IMG(`${k}-happy`)}" alt=""><b>${esc(KINDS[k].name)}</b><span>${esc(KINDS[k].label || '')}</span></div>`),
+  ];
+  setScreen(sheet({
+    bg: pl.bg, tag: `Level ${l}`, badge: firstOfPlace ? 'NEW PLACE' : '', title: esc(pl.name),
+    sub: `<span class="ar">${pl.ar}</span> · ${esc(pl.tag)} · ${list.length} customers`,
+    body: `${targets(stars)}${news.length ? `<div class="sec">${l === 1 ? 'On the menu' : 'New tonight'}</div><div class="news">${news.join('')}</div>` : ''}${l > 2 ? boostPicker() : ''}`,
+    start: 'Open the stall',
+  }), true, 'sheet');
   wireBoosts(() => showIntro(l));
   bind('start', () => startLevel(l));
   bind('back', () => { pendingBoosts = {}; showMap(l); });
@@ -694,16 +722,29 @@ function showIntro(l) {
 
 function showRushIntro() {
   previewKitchen();
-  setScreen(`<div class="ribbon">Endless Rush</div>
-    <h1 style="margin-top:6px">How long can you last?</h1>
-    <p>Customers keep coming, faster and faster. If <b>3 customers</b> walk off, it's over.</p>
-    <p class="muted">Uses everything you've unlocked so far (up to level ${maxLevel()}).</p>
-    <ul class="lines"><li><span>Best money</span><b>BD ${fils(S.endless.best)}</b></li><li><span>Most served</span><b>${S.endless.bestServed}</b></li></ul>
-    ${boostPicker()}
-    <div class="stack"><button class="btn coral" id="start">Start the rush</button><button class="btn ghost" id="back">Back</button></div>`, true);
+  setScreen(sheet({
+    bg: placeOf(maxLevel()).bg, tag: 'Endless Rush', title: 'How long can you last?',
+    sub: 'Customers keep coming, faster and faster. 3 walk off and it\'s over.',
+    body: `<div class="targets two"><div><i>Best money</i><b>${fils(S.endless.best)}</b></div><div><i>Most served</i><b>${S.endless.bestServed}</b></div></div>
+      <p class="muted" style="margin:10px 0 0">Uses everything you've unlocked so far (up to level ${maxLevel()}).</p>${boostPicker()}`,
+    start: 'Start the rush', startClass: 'coral',
+  }), true, 'sheet');
   wireBoosts(showRushIntro);
   bind('start', startEndless);
   bind('back', () => { pendingBoosts = {}; showMenu(); });
+}
+
+function showEventIntro(id) {
+  const ev = EVENTS[id], { list, stars } = genEvent(id), live = ev.live(new Date());
+  setScreen(sheet({
+    bg: ev.bg, tag: 'Special night', badge: live ? 'LIVE · COINS ×2' : '', title: esc(ev.name),
+    sub: `<span class="ar">${ev.ar}</span> · ${list.length} customers`,
+    body: `${targets(stars.map((s) => s * (live ? 2 : 1)))}<p class="muted" style="margin:10px 0 0">${esc(ev.desc)}</p>${boostPicker()}`,
+    start: 'Open the stall',
+  }), true, 'sheet');
+  wireBoosts(() => showEventIntro(id));
+  bind('start', () => startEvent(id));
+  bind('back', () => { pendingBoosts = {}; showEvents(); });
 }
 
 function showEvents() {
@@ -723,35 +764,24 @@ function showEvents() {
   panel.querySelectorAll('[data-ev]').forEach((b) => (b.onclick = () => { Sound.click(); showEventIntro(b.dataset.ev); }));
   bind('back', showMenu);
 }
-function showEventIntro(id) {
-  const ev = EVENTS[id], { list, stars } = genEvent(id), live = ev.live(new Date());
-  setScreen(`<div class="ribbon">${esc(ev.name)}</div>
-    <div class="placecard" style="background-image:url(${IMG(ev.bg)})"><b>${esc(ev.name)}</b><span>${ev.ar}${live ? ' · LIVE: coins ×2' : ''}</span></div>
-    <div class="big">${list.length} customers</div><p class="muted">${esc(ev.desc)}</p>
-    <ul class="lines">${stars.map((s, k) => `<li><span>${'★'.repeat(k + 1)}</span><b>BD ${fils(s * (live ? 2 : 1))}</b></li>`).join('')}</ul>
-    ${boostPicker()}
-    <div class="stack"><button class="btn green" id="start">Open the stall</button><button class="btn ghost" id="back">Back</button></div>`, true);
-  wireBoosts(() => showEventIntro(id));
-  bind('start', () => startEvent(id));
-  bind('back', () => { pendingBoosts = {}; showEvents(); });
-}
-
 function showShop(back, tab = 'decor') {
-  const ups = Object.entries(UPGRADES).map(([id, u]) => {
-    const lvl = S.upgrades[id], cost = u.costs[lvl], maxed = cost == null;
-    return `<div class="up"><div><b>${esc(u.name)}</b><span class="pips">${u.costs.map((_, i) => `<i class="${i < lvl ? 'on' : ''}"></i>`).join('')}</span><p>${esc(u.desc)}</p></div>
-      <button class="btn ${maxed ? 'ghost' : 'gold'}" data-up="${id}" ${maxed || S.wallet < cost ? 'disabled' : ''} type="button">${maxed ? 'Maxed' : fils(cost)}</button></div>`;
-  }).join('');
+  const card = (img, name, desc, extra, btn) => `<div class="item${extra}"><img src="${IMG(img)}" alt=""><b>${name}</b><span>${desc}</span>${btn}</div>`;
   const decs = Object.entries(DECOR).map(([id, d]) => {
     const own = !!S.decor[id];
-    return `<div class="up deco"><img src="${IMG(`decor-${id}`)}" alt=""><div><b>${esc(d.name)}</b><p>${esc(d.desc)}</p></div>
-      <button class="btn ${own ? 'ghost' : 'gold'}" data-de="${id}" ${own || S.wallet < d.cost ? 'disabled' : ''} type="button">${own ? 'Owned ✓' : fils(d.cost)}</button></div>`;
+    return card(`decor-${id}`, esc(d.name), esc(d.desc), own ? ' owned' : '',
+      own ? '<em>Owned ✓</em>' : `<button class="buy" data-de="${id}" type="button" ${S.wallet < d.cost ? 'disabled' : ''}>${fils(d.cost)}</button>`);
   }).join('');
-  setScreen(`<div class="ribbon">Shop</div><div class="wallet"><i class="coin"></i>${fils(S.wallet)} BD</div>
-    <div class="tabs"><button class="${tab === 'decor' ? 'on' : ''}" id="tDecor" type="button">Decorations</button><button class="${tab === 'up' ? 'on' : ''}" id="tUp" type="button">Upgrades</button></div>
-    <div class="shop">${tab === 'decor' ? decs : ups}</div>
-    ${tab === 'decor' ? '<p class="muted">Decorations show up on your stall in every place.</p>' : ''}
-    <div class="stack"><button class="btn" id="back">Done</button></div>`, !G);
+  const ups = Object.entries(UPGRADES).map(([id, u]) => {
+    const lvl = S.upgrades[id], cost = u.costs[lvl], maxed = cost == null;
+    return card(UP_ICON[id], `${esc(u.name)} <span class="pips">${u.costs.map((_, i) => `<i class="${i < lvl ? 'on' : ''}"></i>`).join('')}</span>`, esc(u.desc), maxed ? ' owned' : '',
+      maxed ? '<em>Maxed ✓</em>' : `<button class="buy" data-up="${id}" type="button" ${S.wallet < cost ? 'disabled' : ''}>${fils(cost)}</button>`);
+  }).join('');
+  setScreen(`<div class="shophead"><b>Shop</b><span class="wallet2"><i class="coin"></i>${fils(S.wallet)} BD</span></div>
+    <div class="sheet-body">
+      <div class="tabs"><button class="${tab === 'decor' ? 'on' : ''}" id="tDecor" type="button">Decorations</button><button class="${tab === 'up' ? 'on' : ''}" id="tUp" type="button">Upgrades</button></div>
+      <div class="grid2">${tab === 'decor' ? decs : ups}</div>
+    </div>
+    <div class="sheet-foot one"><button class="btn" id="back" type="button">Done</button></div>`, !G, 'sheet');
   panel.querySelectorAll('[data-up]').forEach((b) => (b.onclick = () => {
     const id = b.dataset.up, cost = UPGRADES[id].costs[S.upgrades[id]];
     if (cost == null || S.wallet < cost) return;
